@@ -59,7 +59,9 @@ async function generatePersonalizedEmail(prospect, product, sequenceStep) {
       max_tokens: 400,
       messages: [{
         role: 'user',
-        content: `Write a short, highly personalized cold outreach email for a mortgage company.
+        content: `COMPLIANCE STANDARDS: CAN-SPAM compliant (include unsubscribe notice). RESPA/Fair Lending: no discriminatory language, no steering, equal opportunity framing. No fabricated statistics or guaranteed outcomes. Include "Reply STOP to unsubscribe" in every email.
+
+Write a short, highly personalized cold outreach email for a mortgage company.
 
 PRODUCT: ${product}
 COMPANY: ${prospect.respondent_name || prospect.company}
