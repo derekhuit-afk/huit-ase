@@ -283,17 +283,20 @@
     document.getElementById('huit-typing')?.remove();
   }
 
+  const ZENOPAY_CHECKOUT = 'https://app.zenopay.ai/api/public/checkout';
+
   function showCTA(productConfig, qualification) {
     const card = document.createElement('div');
     card.className = 'huit-cta-card';
     const isHot = qualification?.score >= 70 || qualification?.readyForCheckout;
+    const tier = qualification?.suggestedTier || 'STARTER';
+    const btnId = 'huit-cta-' + Date.now();
     card.innerHTML = `
       <p>${isHot ? '🔥 You\'re a strong match. Ready to get started?' : 'Want to see it in action?'}</p>
-      <a href="${isHot ? productConfig.checkoutUrl : productConfig.demoUrl}" 
-         target="_blank" class="huit-btn-primary">
+      <button id="${btnId}" class="huit-btn-primary">
         ${isHot ? productConfig.ctaLabel + ' — ' + productConfig.pricing : 'Book a 20-Min Demo →'}
-      </a>
-      <a href="${productConfig.demoUrl}" target="_blank" class="huit-btn-secondary">
+      </button>
+      <a href="${productConfig.demoUrl || 'https://huit.ai/demo'}" target="_blank" class="huit-btn-secondary">
         ${isHot ? 'Schedule a demo instead' : 'Start at ' + productConfig.pricing}
       </a>
     `;
@@ -302,6 +305,43 @@
     wrapper.appendChild(card);
     messagesEl.appendChild(wrapper);
     messagesEl.scrollTop = messagesEl.scrollHeight;
+
+    // Wire the button to create a live Stripe checkout
+    document.getElementById(btnId)?.addEventListener('click', async function() {
+      const btn = this;
+      btn.textContent = 'Creating checkout...';
+      btn.disabled = true;
+      try {
+        const email = leadInfo.email || prompt('Enter your work email to continue:');
+        if (!email) { btn.textContent = 'Enter email to proceed'; btn.disabled = false; return; }
+        const res = await fetch(ZENOPAY_CHECKOUT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            product: PRODUCT,
+            tier: tier,
+            email: email,
+            name: leadInfo.firstName || '',
+            successUrl: window.location.origin + '/billing?success=true&session_id={CHECKOUT_SESSION_ID}',
+            cancelUrl: window.location.href + '?cancelled=true'
+          })
+        });
+        const data = await res.json();
+        if (data.url) {
+          window.open(data.url, '_blank');
+          btn.textContent = '✅ Checkout opened';
+          addMessage('assistant', 'Checkout is open in a new tab. Complete your payment there and you\'ll be set up instantly.');
+        } else {
+          btn.textContent = productConfig.ctaLabel;
+          btn.disabled = false;
+          addMessage('assistant', 'Let me connect you directly — reach out to derek@huit.ai and we\'ll get you set up.');
+        }
+      } catch (err) {
+        btn.textContent = productConfig.ctaLabel;
+        btn.disabled = false;
+        addMessage('assistant', 'Having trouble with checkout — email derek@huit.ai and we\'ll get you started right away.');
+      }
+    });
   }
 
   function showEmailCapture() {
