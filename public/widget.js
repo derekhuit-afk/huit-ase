@@ -2,12 +2,15 @@
  * HUIT.AI AUTONOMOUS SALES ENGINE — EMBEDDABLE WIDGET
  * Version 1.0 | Built From Alaska
  * 
- * Usage: <script src="https://ase.huit.ai/widget.js" data-product="CRMEX"></script>
+ * Usage: <script src="https://huit-ase-huitai.vercel.app/widget.js" data-product="CRMEX"></script>
+ * Alt:   <script src="https://ase.huit.ai/widget.js" data-product="CRMEX"></script>
  */
 (function () {
   const SCRIPT = document.currentScript;
   const PRODUCT = SCRIPT?.getAttribute('data-product') || 'DEFAULT';
-  const ASE_URL = 'https://ase.huit.ai';
+  // Auto-detect ASE backend URL from the script's own src
+  const SCRIPT_SRC = SCRIPT?.getAttribute('src') || '';
+  const ASE_URL = SCRIPT_SRC ? new URL(SCRIPT_SRC).origin : 'https://huit-ase-huitai.vercel.app';
   const BRAND_COLOR = '#0ea5e9';
   const DARK = '#0f172a';
   const SURFACE = '#1e293b';
