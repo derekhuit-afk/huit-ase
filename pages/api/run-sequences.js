@@ -36,8 +36,8 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-ase-key');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  const limit = parseInt(req.body?.limit || req.query?.limit || '50');
-  const minScore = parseInt(req.body?.min_score || '55');
+  const limit = parseInt(req.body?.limit || req.query?.limit || '100');
+  const minScore = parseInt(req.body?.min_score || '40');
   const startTime = Date.now();
 
   try {
@@ -47,7 +47,7 @@ export default async function handler(req, res) {
 
     // 2. Fetch ready prospects not yet contacted
     const prospectsRes = await sb(
-      `/outbound_prospects?select=*&status=eq.ready&ai_score=gte.${minScore}&last_contacted_at=is.null&opted_out=eq.false&order=ai_score.desc&limit=${limit}`
+      `/outbound_prospects?select=*&status=in.(ready,low_priority)&ai_score=gte.${minScore}&last_contacted_at=is.null&opted_out=eq.false&order=ai_score.desc&limit=${limit}`
     );
     const prospects = Array.isArray(prospectsRes.data) ? prospectsRes.data : [];
 
