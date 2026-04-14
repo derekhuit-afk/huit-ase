@@ -421,13 +421,11 @@
         role: m.role === 'user' ? 'user' : 'assistant',
         content: m.content
       }));
-      // Remove last user message since we already added it
-      const toSend = apiMessages.slice(0, -1);
 
       const res = await fetch(`${ASE_URL}/api/qualify`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: toSend, product: PRODUCT })
+        body: JSON.stringify({ messages: apiMessages, product: PRODUCT })
       });
 
       const data = await res.json();
