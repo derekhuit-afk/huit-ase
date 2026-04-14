@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     host: 'aws-0-us-east-1.pooler.supabase.com',
     port: 5432,
     user: 'postgres.vvkdnzqgtajeouxlliuk',
-    password: process.env.SUPABASE_SERVICE_ROLE_KEY,
+    password: process.env.DB_PASSWORD || process.env.SUPABASE_SERVICE_ROLE_KEY,
     database: 'postgres',
     ssl: { rejectUnauthorized: false },
     connectionTimeoutMillis: 10000,
