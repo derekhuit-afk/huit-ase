@@ -5,9 +5,14 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
+  // Strip sslmode from URL and handle SSL manually
+  let connStr = process.env.DATABASE_URL || '';
+  connStr = connStr.replace(/[?&]sslmode=[^&]*/g, '');
+
   const pool = new Pool({
-    connectionString: process.env.DATABASE_URL || `postgresql://postgres:${encodeURIComponent(process.env.DB_PASSWORD || '')}@db.vvkdnzqgtajeouxlliuk.supabase.co:5432/postgres`,
-    ssl: { rejectUnauthorized: false }
+    connectionString: connStr,
+    ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false,
+    connectionTimeoutMillis: 10000,
   });
 
   try {
