@@ -5,13 +5,13 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
-  // Strip sslmode from URL and handle SSL manually
-  let connStr = process.env.DATABASE_URL || '';
-  connStr = connStr.replace(/[?&]sslmode=[^&]*/g, '');
-
   const pool = new Pool({
-    connectionString: connStr,
-    ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false,
+    host: 'aws-0-us-east-1.pooler.supabase.com',
+    port: 5432,
+    user: 'postgres.vvkdnzqgtajeouxlliuk',
+    password: process.env.SUPABASE_SERVICE_ROLE_KEY,
+    database: 'postgres',
+    ssl: { rejectUnauthorized: false },
     connectionTimeoutMillis: 10000,
   });
 
@@ -57,7 +57,7 @@ export default async function handler(req, res) {
     
     res.json({ success: true, ase_leads_count: rows[0].c, tables: ['ase_leads', 'checkout_sessions'] });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err.message, detail: err.toString(), code: err.code });
   } finally {
     await pool.end();
   }
