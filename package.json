@@ -1,7 +1,7 @@
 {
   "name": "huit-ase",
   "version": "1.0.0",
-  "description": "Huit.AI Autonomous Sales Engine — Built From Alaska",
+  "description": "Huit.AI Autonomous Sales Engine \u2014 Built From Alaska",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -12,6 +12,7 @@
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "@supabase/supabase-js": "2.39.0",
-    "resend": "3.2.0"
+    "resend": "3.2.0",
+    "pg": "^8.13.0"
   }
 }
