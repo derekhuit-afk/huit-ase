@@ -1,6 +1,7 @@
-// ASE: pages/api/run-sequences.js
-// Reads ready outbound_prospects → calls /api/chain → stores touchpoints
-// Called by AutoPilot nightly cron at /api/cron/outreach
+// ASE: pages/api/run-sequences.js  v2.0
+// ACTUALLY SENDS EMAIL 1 via Resend on first run
+// Schedules steps 2–5 in outbound_touchpoints for /api/send-touchpoints daily cron
+// Derek Huit <derek@huit.ai> as sender — huit.ai domain verified in Resend
 
 const SB_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://vvkdnzqgtajeouxlliuk.supabase.co';
 const SB_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;

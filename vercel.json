@@ -1,5 +1,15 @@
 {
   "version": 2,
+  "crons": [
+    {
+      "path": "/api/send-touchpoints",
+      "schedule": "0 17 * * *"
+    },
+    {
+      "path": "/api/run-sequences",
+      "schedule": "0 18 * * 1"
+    }
+  ],
   "headers": [
     {
       "source": "/widget.js",
